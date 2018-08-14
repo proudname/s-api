@@ -32,9 +32,10 @@ class ApiController extends AbstractController
                 ->setStatus('Подготовка к обработке');
             $db->persist($upload);
             $db->flush();
-            $url = $this->generateUrl('api_worker', ['id' => $upload->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
-            $process = new Process("curl $url");
-            $process->start();
+//            $url = $this->generateUrl('api_worker', ['id' => $upload->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+//            $process = new Process("curl $url");
+//            $process->start();
+            $this->worker($upload->getId());
             return $this->json([
                 'response' => 'success',
                 'uploadId' => $upload->getId()
@@ -56,10 +57,11 @@ class ApiController extends AbstractController
         $db = $this->getDoctrine()->getManager();
         if ($id = $request->get('id')) {
             if ($upload = $db->find(Upload::class, $id)) {
-                if ($upload->getIsComplete() == 1) {
+                if ($upload->getIsComplete()) {
                     return $this->json([
                         'response' => 'success',
-                        'status' => 'complete'
+                        'status' => 'complete',
+                        'is_end' => 1
                     ]);
                 }
 
@@ -112,10 +114,10 @@ class ApiController extends AbstractController
     /**
      * @Route("/worker", name="api_worker")
      */
-    public function worker(Request $request) {
+    public function worker($id) {
         $root_dir = $this->getParameter('kernel.project_dir');
         $this->db = $this->getDoctrine()->getManager();
-        $this->uploadEntity = $this->db->find(Upload::class, $request->get('id'));
+        $this->uploadEntity = $this->db->find(Upload::class, $id);
         $process = new Process(array("{$root_dir}/handler.sh", $this->uploadEntity->getPath()));
         $process->start(function ($type, $buffer) {
             $this->uploadEntity->setStatus($buffer);
@@ -126,7 +128,6 @@ class ApiController extends AbstractController
         $this->uploadEntity->setIsComplete(1);
         $this->db->persist($this->uploadEntity);
         $this->db->flush();
-        return new Response(1);
     }
 
 

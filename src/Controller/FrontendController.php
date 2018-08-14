@@ -27,21 +27,27 @@ class FrontendController extends AbstractController
     public function status(Request $request)
     {
         $status = 'Id not set';
+        $response = 'failed';
+        $successId = '';
         if ($id = $request->get('id')) {
             $db = $this->getDoctrine()->getManager();
            if ($upload = $db->find(Upload::class, $id)) {
                $status = $upload->getStatus();
+               $successId = $id;
+               $response = 'success';
            }
            else {
                $status = 'Id not found';
            }
         }
         return $this->render('frontend/status.html.twig', [
+            'response' => $response,
             'status' => $status,
+            'id' => $successId
         ]);
     }
     /**
-     * @Route("/frontend/upload", name="frontend_download")
+     * @Route("/frontend/download", name="frontend_download")
      */
     public function download(Request $request)
     {
@@ -50,16 +56,16 @@ class FrontendController extends AbstractController
         if ($id = $request->get('id')) {
             $db = $this->getDoctrine()->getManager();
             if ($upload = $db->find(Upload::class, $id)) {
-                $status = 1;
+                $status = "Успех";
                 $path = $upload->getPath();
             }
             else {
                 $status = 'Id not found';
             }
         }
-        return $this->render('frontend/status.html.twig', [
+        return $this->render('frontend/download.html.twig', [
             'status' => $status,
-            'path' => $path
+            'link' => $path
         ]);
     }
 }

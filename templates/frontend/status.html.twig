@@ -4,33 +4,37 @@
 
 {% block body %}
     <div class="error">
-
+{{ status }}
     </div>
-{{ form_start(form, {'action': path('api_upload') }) }}
-{{ form_widget(form) }}
-{{ form_end(form) }}
+
+<div class="status">
+    Статус: <span class="status-message">Подождите</span>
+</div>
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        $('form').submit(function (e) {
-            e.preventDefault();
-            let th = $(this);
-            let data = $(th).serialize();
+        setInterval(function () {
             $.ajax({
-                url: '/upload',
-                data: data,
+
+                url: '/status?id={{ id }}',
                 method: 'POST',
                 success: function (data) {
                     if (data.response === 'failed') {
-                        $('.error').html(data.error_message);
+                        $('.error').html(data.status);
                     }
                     else {
-                        window.location.href = window.location.hostname +'/status?id='+data.uploadId;
+                        $('.status-message').text(data.status);
+
+                        console.log(data.is_end);
+                        if (data.status == 'complete') {
+                            window.location.href = '/frontend/download?id='+ {{ id }};
+                        }
                     }
                 }
             })
-        })
+        }, 5000)
+
     </script>
 
 {% endblock %}
