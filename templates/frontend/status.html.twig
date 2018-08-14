@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+    <div class="error">
+
+    </div>
+{{ form_start(form, {'action': path('api_upload') }) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $('form').submit(function (e) {
+            e.preventDefault();
+            let th = $(this);
+            let data = $(th).serialize();
+            $.ajax({
+                url: '/upload',
+                data: data,
+                method: 'POST',
+                success: function (data) {
+                    if (data.response === 'failed') {
+                        $('.error').html(data.error_message);
+                    }
+                    else {
+                        window.location.href = window.location.hostname +'/status?id='+data.uploadId;
+                    }
+                }
+            })
+        })
+    </script>
+
+{% endblock %}
