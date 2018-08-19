@@ -9,6 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Upload
 {
+
+    public function __construct()
+    {
+        $this->isComplete = 0;
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -42,7 +48,7 @@ class Upload
     private $status;
 
     /**
-     * @ORM\Column(type="binary")
+     * @ORM\Column(type="integer")
      */
     private $isComplete;
 

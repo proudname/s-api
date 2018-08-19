@@ -26,7 +26,7 @@ class FrontendController extends AbstractController
      */
     public function status(Request $request)
     {
-        $status = 'Id not set';
+        $status = 'Id is not set';
         $response = 'failed';
         $successId = '';
         if ($id = $request->get('id')) {
@@ -37,7 +37,7 @@ class FrontendController extends AbstractController
                $response = 'success';
            }
            else {
-               $status = 'Id not found';
+               $status = 'Id is not found';
            }
         }
         return $this->render('frontend/status.html.twig', [
@@ -51,7 +51,7 @@ class FrontendController extends AbstractController
      */
     public function download(Request $request)
     {
-        $status = 'Id not set';
+        $status = 'Id is not set';
         $path = '';
         if ($id = $request->get('id')) {
             $db = $this->getDoctrine()->getManager();
@@ -60,7 +60,7 @@ class FrontendController extends AbstractController
                 $path = $upload->getPath();
             }
             else {
-                $status = 'Id not found';
+                $status = 'Id is not found';
             }
         }
         return $this->render('frontend/download.html.twig', [

@@ -4,7 +4,6 @@
 
 {% block body %}
     <div class="error">
-{{ form.errors }}
     </div>
 {{ form_start(form, {'action': path('api_upload') }) }}
 {{ form_widget(form) }}

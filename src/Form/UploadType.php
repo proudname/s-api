@@ -14,6 +14,7 @@ class UploadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->setMethod('GET')
             ->add('path', null, ['required' => true])
             ->add('param1')
             ->add('param2')
