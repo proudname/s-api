@@ -68,4 +68,17 @@ class FrontendController extends AbstractController
             'link' => $path
         ]);
     }
+
+
+    /**
+     * @Route("/frontend/last/{quantity}", name="frontend_quantity", requirements={"quantity"="\d+"})
+     */
+    public function last($quantity = 20)
+    {
+        $db = $this->getDoctrine()->getManager();
+        $records = $db->getRepository(Upload::class)->findLastDownloads($quantity);
+        return $this->render('frontend/last.html.twig', [
+            'model' => $records
+        ]);
+    }
 }

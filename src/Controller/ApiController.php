@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Upload;
 use App\Form\UploadType;
+use App\Repository\UploadRepository;
 use App\Service\Worker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\Event;
@@ -124,6 +125,18 @@ public function worker(Request $request) {
     $worker = new Worker($db, $root_dir, $request->get('id'));
     $worker->work();
     return new Response(1);
+}
+
+    /**
+     * @Route("/last/{quantity}", name="api_last", requirements={"quantity"="\d+"})
+     */
+public function getLastDownloads($quantity = 20) {
+    $db = $this->getDoctrine()->getManager();
+    $records = $db->getRepository(Upload::class)->findLastDownloads($quantity);
+    return $this->json([
+        'response' => 'success',
+        'items' => $records
+    ]);
 }
 
 }

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+    {% if model is empty %}
+
+        <div class="error">
+            Пусто.
+        </div>
+
+    {% endif %}
+
+    <table class="table" id="last-status-table">
+        {% for item in model %}
+
+            <tr>
+                <td class="id">{{ item['id'] }}</td>
+                <td class="path">{{ item['path'] }}</td>
+                <td class="status" id="status-{{ item['id'] }}">{{ item['status'] }}</td>
+            </tr>
+
+        {% endfor %}
+
+    </table>
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function (e) {
+            setInterval(function () {
+                $.ajax({
+                    url: '/last',
+                    method: 'POST',
+                    success: function (d) {
+                        if (d.response == 'success') {
+                            d.items.forEach(function (item, i, arr) {
+                                $(`#status-${item.id}`).html(item.status)
+                            });
+                        }
+                    }
+                });
+            }, 3000)
+        });
+    </script>
+
+{% endblock %}

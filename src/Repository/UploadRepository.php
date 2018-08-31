@@ -19,6 +19,17 @@ class UploadRepository extends ServiceEntityRepository
         parent::__construct($registry, Upload::class);
     }
 
+    public function findLastDownloads($quantity)
+    {
+        return $this->createQueryBuilder('u')
+            ->orderBy('u.id', 'DESC')
+            ->setMaxResults($quantity)
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+
 //    /**
 //     * @return Upload[] Returns an array of Upload objects
 //     */

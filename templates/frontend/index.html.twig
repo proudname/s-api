@@ -20,7 +20,7 @@
             $.ajax({
                 url: '/upload',
                 data: data,
-                method: 'POST',
+                method: 'GET',
                 success: function (data) {
                     if (data.response === 'failed') {
                         $('.error').html(data.error_message);
